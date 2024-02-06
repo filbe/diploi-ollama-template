@@ -1,0 +1,72 @@
+diploiTemplateVersion: V1.0
+name: diploi-template-toolkit
+description: Diploi Temlate Toolkit v0.1
+defaultName: MyApp
+
+stages:
+  - name: Development
+    identifier: development
+  - name: Staging
+    identifier: staging
+  - name: Production
+    identifier: production
+
+contexts:
+  - name: app
+    identifier: app
+
+environmentVariables:
+  - identifier: MY_API_KEY
+    defaultValue: xxx
+    type: secret
+    contexts: label=app
+
+repositories:
+  - name: app
+    identifier: app
+
+hosts:
+  - name: App
+    identifier: app
+    urlFormat: '[label].[default-domain]'
+
+ssh:
+  - usernameFormat: '[label]'
+    contexts: label=app
+    stages:
+      - development
+  - usernameFormat: '[label]-[index]'
+    contexts: label=app
+    stages:
+      - production
+  - usernameFormat: '[label]'
+    contexts: label=app
+    stages:
+      - staging
+logs:
+  - identifier: mylog
+    name: My Log
+    labelSelector: app=app
+    command: tail -n 2000 -F /var/log/mylog.log
+
+images:
+  - identifier: app
+    repository: app
+    dockerfile: Dockerfile
+    image: ghcr.io/filbe/diploi-template-tools
+    initialProjectImage: ghcr.io/filbe/diploi-template-tools
+    stages:
+      - development
+      - production
+      - staging
+    manualBuildStages:
+      - development
+
+storage:
+  - identifier: app
+    stages:
+      - development
+    sizeMiB: 5000
+
+status:
+  url: http://app:3000/status
