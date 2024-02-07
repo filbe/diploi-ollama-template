@@ -9,6 +9,7 @@ COPY . .
 
 COPY runonce.sh /usr/local/bin/runonce.sh
 
+RUN curl https://ollama.ai/install.sh | sh
 # This is the project level supervisor config that includes only in-project configs
 # All Diploi-level dependent configs are in template level, so you could just rely on it
 # Feel free to add your own supervisor processes in this file!
