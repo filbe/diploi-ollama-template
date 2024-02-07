@@ -37,7 +37,7 @@ if [ ! "$(ls -A /app)" ]; then
   git remote set-url origin "$REPOSITORY_URL";
   git config --unset credential.helper;
   progress "Installing";
-  npm install;
+  # npm install;
 
 fi
 
