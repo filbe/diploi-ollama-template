@@ -42,6 +42,10 @@ logs:
     name: Ollama Server logs
     labelSelector: app=app
     command: tail -n 2000 -F /var/log/ollama-server.log
+  - identifier: ai-talk-ai
+    name: AI talks to another AI
+    labelSelector: app=app
+    command: tail -n 2000 -F /var/log/ai-talk-ai.log
 
 images:
   - identifier: app
