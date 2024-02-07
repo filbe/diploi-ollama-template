@@ -11,6 +11,11 @@ stages:
   - name: Production
     identifier: production
 
+environmentVariables:
+  - identifier: TOPIC
+    type: string
+    contexts: label=app
+
 contexts:
   - name: app
     identifier: app
