@@ -4,8 +4,8 @@ FROM ghcr.io/filbe/diploi-ollama-template:main
 WORKDIR /app
 COPY . .
 
-RUN npm install
-RUN npm run build
+#RUN npm install
+#RUN npm run build
 
 COPY runonce.sh /usr/local/bin/runonce.sh
 
