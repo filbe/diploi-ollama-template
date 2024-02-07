@@ -70,3 +70,6 @@ storage:
 
 status:
   url: http://app:3000/status
+
+requirements:
+  ramGiB: 8
