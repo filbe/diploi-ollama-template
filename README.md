@@ -1,4 +1,3 @@
-# Diploi Template Toolkit
+# Diploi Ollama Template
 
-An example project that can be used as a base for your own Diploi Template
-
+A project template that can be used to run Ollama models easily on Diploi.

@@ -1,6 +1,6 @@
 diploiTemplateVersion: V1.0
-name: diploi-template-toolkit
-description: Diploi Temlate Toolkit v0.1
+name: diploi-ollama-template
+description: Diploi Ollama Template
 defaultName: Ollama
 
 stages:
@@ -14,12 +14,6 @@ stages:
 contexts:
   - name: app
     identifier: app
-
-environmentVariables:
-  - identifier: MY_API_KEY
-    defaultValue: xxx
-    type: secret
-    contexts: label=app
 
 repositories:
   - name: app
@@ -44,17 +38,17 @@ ssh:
     stages:
       - staging
 logs:
-  - identifier: mylog
-    name: My Log
+  - identifier: ollama-server
+    name: Ollama Server logs
     labelSelector: app=app
-    command: tail -n 2000 -F /var/log/mylog.log
+    command: tail -n 2000 -F /var/log/ollama-server.log
 
 images:
   - identifier: app
     repository: app
     dockerfile: Dockerfile
-    image: ghcr.io/filbe/diploi-template-tools
-    initialProjectImage: ghcr.io/filbe/diploi-template-tools
+    image: ghcr.io/filbe/diploi-ollama-template
+    initialProjectImage: ghcr.io/filbe/diploi-ollama-template
     stages:
       - development
       - production
