@@ -1,24 +1,32 @@
-import {Ollama} from 'ollama'
+import { Ollama } from 'ollama';
 
-const ollama = new Ollama({host: 'localhost:11434'});
-const ollama2 = new Ollama({host: 'localhost:11435'});
+const ollama = new Ollama({ host: 'localhost:11434' });
+const ollama2 = new Ollama({ host: 'localhost:11435' });
 
-let messageHistory = [{ role: 'user', content: `Let's generate a tale sentence by sentence, only one at a time. You will start with the first, I will write the second, you take the third and so on!` }];
-let previousMessage;
-while(true) {
-    console.log("ollama2> " + messageHistory[messageHistory.length - 1].content);
-    previousMessage = (await ollama.chat({
-        role: 'user',
-        model: 'llama2',
-        messages: messageHistory,
-    })).message;
-    messageHistory.push({...previousMessage, role: 'user'});
-    console.log("ollama1> " + messageHistory[messageHistory.length - 1].content);
-    previousMessage = (await ollama2.chat({
-        role: 'user',
-        model: 'llama2',
-        messages: messageHistory,
-    })).message;
-    messageHistory.push({...previousMessage, role: 'user'});
+const formatInstruction = `Output JSON in this format: {"sentence":"Some example sentence."}. Nothing else should be returned.`;
+const initialInstruction = `Let's generate a tale sentence by sentence, only one at a time. ${formatInstruction}`;
+let taleSentences = [];
+const completionInstruction = `You are about to read a tale that is incompleted. Generate one more sentence to it. ${formatInstruction}. The tale begins here:`;
+console.log('Initial prompt:', initialInstruction);
+while (true) {
+  const resp = await ollama.generate({
+    model: 'llama2',
+    format: 'json',
+    stream: false,
+    prompt: taleSentences.length ? `${completionInstruction}\n${taleSentences.join('\n')}` : initialInstruction,
+  });
+  const { sentence } = JSON.parse(resp.response);
+  console.log('ollama1>', sentence);
+  taleSentences.push(sentence);
 
+  const resp2 = await ollama2.generate({
+    model: 'llama2',
+    format: 'json',
+    stream: false,
+    prompt: `${completionInstruction}\n${taleSentences.join('\n')}`,
+  });
+
+  const { sentence: sentence2 } = JSON.parse(resp2.response);
+  console.log('ollama2>', sentence2);
+  taleSentences.push(sentence2);
 }
