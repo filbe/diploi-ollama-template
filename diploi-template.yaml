@@ -1,7 +1,7 @@
 diploiTemplateVersion: V1.0
 name: diploi-template-toolkit
 description: Diploi Temlate Toolkit v0.1
-defaultName: MyApp
+defaultName: Ollama
 
 stages:
   - name: Development
@@ -66,7 +66,7 @@ storage:
   - identifier: app
     stages:
       - development
-    sizeMiB: 100000
+    sizeMiB: 5000
 
 status:
   url: http://app:3000/status

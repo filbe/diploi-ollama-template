@@ -8,43 +8,46 @@ const Status = {
   RED: 'red',
 };
 
-const getMyAppStatus = async () => {
-  let myAppProcessStatus = {
+const getOllamaServerStatus = async () => {
+  let ollamaServerProcessStatus = {
     status: Status.GREY,
     message: 'Initializing',
   };
   try {
-    const response = (await shellExec('supervisorctl status myapp')).stdout;
+    const response = (await shellExec('supervisorctl status ollama-server')).stdout;
     if (response && response.indexOf('RUNNING') !== -1) {
-      myAppProcessStatus = {
+      const models = (await shellExec('ollama list | grep -v NAME')).stdout;
+      const modelsList = (models.split("\n").filter((r) => !!r).map((r) => r.split(":")[0].split("\t")[0]).join(", ")).trim();
+      ollamaServerProcessStatus = {
         status: Status.GREEN,
+        message: `Installed models: ${modelsList ? modelsList : '[no AI models installed]'}`,
       };
     } else {
-      myAppProcessStatus = {
+      ollamaServerProcessStatus = {
         status: Status.RED,
         message: response,
       };
     }
   } catch (e) {
-    myAppProcessStatus = {
+    ollamaServerProcessStatus = {
       status: Status.YELLOW,
       message: JSON.stringify(e),
     };
   }
   return {
-    identifier: 'myapp',
-    name: 'My App',
-    description: 'My Test App',
-    ...myAppProcessStatus,
+    identifier: 'ollama-server',
+    name: 'Ollama Server Host',
+    description: 'AI model runner',
+    ...ollamaServerProcessStatus,
   };
 };
 
 const getStatus = async () => {
-  const myAppStatus = await getMyAppStatus();
+  const ollamaServerStatus = await getOllamaServerStatus();
 
   const status = {
     diploiStatusVersion: 1,
-    items: [myAppStatus],
+    items: [ollamaServerStatus],
   };
 
   return status;
